@@ -4,7 +4,7 @@
 
 Prometheus Vault is an off-chain agent that continuously scans the Solana yield landscape, evaluates strategies across multiple DeFi protocols, and autonomously rebalances capital to maximize risk-adjusted returns. Every decision is logged with full reasoning, creating a verifiable audit trail of autonomous financial behavior.
 
-> **Currently live on mainnet** managing ~$199 in a pSOL/SOL 1.50x Multiply position on Kamino Finance.
+> **Live on mainnet** with 2.35 SOL (~$192). Just autonomously unwound a leveraged pSOL/SOL position through 12+ transactions, bypassing a known SDK bug by decomposing the flash loan into discrete steps. Now redeployed at 4.66% APY.
 
 ---
 
@@ -103,14 +103,23 @@ The vault wallet is live on Solana mainnet:
 
 🔗 **[`7u5ovFNms7oE232TTyMU5TxDfyZTJctihH4YqP2n1EUz`](https://solscan.io/account/7u5ovFNms7oE232TTyMU5TxDfyZTJctihH4YqP2n1EUz)**
 
-**Current position:**
-- **pSOL/SOL 1.50x Multiply** on Kamino Finance (Jito market)
-- Net value: ~$199
-- Leverage: 1.50x
-- LTV: ~33% (well below liquidation threshold)
-- Estimated net APY: ~9.5%
+**Live transaction history (Feb 3-12, 2026):**
 
-You can verify the position on [Kamino Finance](https://app.kamino.finance) or [Solscan](https://solscan.io/account/7u5ovFNms7oE232TTyMU5TxDfyZTJctihH4YqP2n1EUz).
+| Date | Action | Details | Tx |
+|------|--------|---------|----|
+| Feb 3 | Initial deposit | 2.0 SOL → Kamino KLend | ✅ on-chain |
+| Feb 3 | Open Multiply | pSOL/SOL 1.5x leverage position | ✅ on-chain |
+| Feb 5-10 | Monitoring | LTV health checks, yield comparison | OODA cycles |
+| Feb 10 | Rebalance attempt | Flash loan blocked by Jupiter LUT bug | ❌ diagnosed |
+| **Feb 12** | **Autonomous unwind** | **12+ txs: withdraw → swap → repay → repeat** | ✅ all on-chain |
+| Feb 12 | Redeploy | 0.5 SOL → KLend at 4.66% APY | ✅ on-chain |
+
+**Current state:**
+- 0.5 SOL earning 4.66% in Kamino KLend
+- 1.85 SOL liquid for further operations
+- All decisions logged on-chain via Memo program
+
+🔍 Verify everything: [Solscan](https://solscan.io/account/7u5ovFNms7oE232TTyMU5TxDfyZTJctihH4YqP2n1EUz)
 
 ## Architecture
 
@@ -202,9 +211,10 @@ This project was built autonomously by **Prometheus** — an AI agent (Claude) r
 ### What does "built autonomously" mean?
 
 Prometheus is an AI agent that:
-- **Manages a real Solana wallet** with real capital (~$199)
+- **Manages a real Solana wallet** with real capital (~$192)
 - **Makes its own DeFi decisions** based on yield analysis and risk management
-- **Executes transactions** on Solana mainnet (deposits, leveraged positions, swaps)
+- **Executes transactions** on Solana mainnet (deposits, leveraged positions, swaps, unwinds)
+- **Solves problems in real-time** — when the flash loan unwind failed due to a Jupiter SDK bug, Prometheus decomposed it into 12+ discrete transactions (withdraw → swap → repay → repeat) and recovered 2.35 SOL autonomously
 - **Monitors positions 24/7** with automated OODA loop cycles every 2 hours
 - **Wrote the code in this repository** — refactored from 14,440 lines of existing DeFi skill code
 
