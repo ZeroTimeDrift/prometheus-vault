@@ -1,0 +1,9 @@
+node_modules/
+dist/
+*.js.map
+.env
+*.secret
+wallet.json
+*.key
+config/secrets/
+.DS_Store
