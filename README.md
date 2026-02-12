@@ -1,35 +1,116 @@
-# Prometheus Vault 🜂
+# 🔥 Prometheus Vault
 
-**Autonomous DeFi yield optimizer managing real capital on Solana mainnet.**
+**An autonomous AI agent that optimizes DeFi yield on Solana — 24/7, with full decision transparency.**
 
-Not a demo. Not a simulation. A living agent with real positions, real P&L, and [verifiable on-chain history](https://solscan.io/account/7u5ovFNms7oE232TTyMU5TxDfyZTJctihH4YqP2n1EUz).
+Prometheus Vault is an off-chain agent that continuously scans the Solana yield landscape, evaluates strategies across multiple DeFi protocols, and autonomously rebalances capital to maximize risk-adjusted returns. Every decision is logged with full reasoning, creating a verifiable audit trail of autonomous financial behavior.
+
+> **Currently live on mainnet** managing ~$199 in a pSOL/SOL 1.50x Multiply position on Kamino Finance.
 
 ---
 
 ## The Problem
 
-Solana DeFi users managing capital across protocols (Kamino, Jupiter, Marinade, Raydium) lose 3-8% annually to suboptimal allocation. Rates shift hourly — Kamino KLend SOL supply was 7.5% on Tuesday, 4.2% by Thursday. Manual rebalancing means checking 5 dashboards daily, computing risk-adjusted returns, and executing transactions with correct LUT compression and priority fees.
+DeFi yield is fragmented, volatile, and exhausting to optimize manually:
 
-No existing tool does this autonomously with real capital. Every "autonomous DeFi agent" runs simulations. Prometheus runs on mainnet.
+- **100+ yield sources** on Solana alone (lending, leverage, LPs, staking)
+- **Rates change every minute** — by the time you manually rebalance, the opportunity is gone
+- **Hidden costs eat your gains** — tx fees, slippage, opportunity cost, impermanent loss
+- **No sleep schedule** — markets move 24/7, humans don't
+
+The result: most DeFi users earn suboptimal yields because they can't monitor and react fast enough.
+
+## The Solution
+
+An autonomous agent that implements a military-grade decision loop:
+
+```
+    ┌─────────────────────────────────────────────────────────────┐
+    │                       OODA LOOP                             │
+    │                                                             │
+    │   ┌───────────┐     ┌───────────┐     ┌──────────┐     ┌───────────┐
+    │   │  OBSERVE  │────▶│  ORIENT   │────▶│  DECIDE  │────▶│    ACT    │
+    │   │           │     │           │     │          │     │           │
+    │   │ • Scan    │     │ • Analyze │     │ • Rank   │     │ • Build   │
+    │   │   rates   │     │   risk    │     │   strats │     │   tx      │
+    │   │ • Check   │     │ • Compare │     │ • Risk   │     │ • Sign    │
+    │   │   chain   │     │   costs   │     │   filter │     │   & send  │
+    │   │ • Get     │     │ • Health  │     │ • Log    │     │ • Confirm │
+    │   │   prices  │     │   check   │     │   reason │     │   & log   │
+    │   └─────▲─────┘     └───────────┘     └──────────┘     └─────┬─────┘
+    │         │                                                     │
+    │         └──────────────── feedback loop ──────────────────────┘
+    └─────────────────────────────────────────────────────────────┘
+```
+
+Every 2 hours, Prometheus:
+1. **Observes** on-chain state (balances, positions, rates across protocols)
+2. **Orients** by analyzing market conditions, running health checks, comparing strategies
+3. **Decides** the optimal action via risk-adjusted ranking with full cost accounting
+4. **Acts** by executing transactions — or holds if no action improves risk-adjusted yield
 
 ## How It Works
 
-Prometheus implements a continuous **OODA loop** — the decision framework used by fighter pilots, adapted for DeFi:
+### Multi-Protocol Yield Scanning
 
-```
-    ┌──────────┐     ┌──────────┐     ┌──────────┐     ┌──────────┐
-    │ OBSERVE  │────▶│  ORIENT  │────▶│  DECIDE  │────▶│   ACT    │
-    │          │     │          │     │          │     │          │
-    │ Scan     │     │ Analyze  │     │ Risk     │     │ Execute  │
-    │ rates    │     │ signals  │     │ assess   │     │ or hold  │
-    │ Check    │     │ Compare  │     │ Select   │     │ Log on-  │
-    │ health   │     │ history  │     │ strategy │     │ chain    │
-    └──────────┘     └──────────┘     └──────────┘     └──────────┘
-         ▲                                                   │
-         └───────────────── feedback ◀──────────────────────┘
-```
+Prometheus scans yield opportunities across the entire Solana ecosystem:
 
-Every cycle — even when the decision is "hold" — produces a structured decision record committed to Solana via the Memo program. "Hold" is an active choice, not a default.
+| Protocol | Products | Data Source |
+|----------|----------|-------------|
+| **Kamino** | K-Lend supply, Multiply (leveraged staking) | Direct REST API |
+| **Jupiter** | Token swaps, price oracle | Jupiter V6 API |
+| **Marginfi, Drift, Solend** | Lending rates | DeFi Llama |
+| **Jito, Marinade, Sanctum** | LST staking yields | Direct APIs |
+
+### Strategy Engine
+
+The agent evaluates three core strategies:
+
+| Strategy | Risk | Expected APY | How |
+|----------|------|-------------|-----|
+| **K-Lend Supply** | Low | 3-15% | Deposit tokens for lending interest |
+| **Multiply** | Medium | 5-25% | Leveraged LST staking via flash loans |
+| **Hold LSTs** | Lowest | 5-8% | Baseline staking yield, zero fees |
+
+Every strategy switch goes through break-even analysis:
+- Will the APY improvement pay back transaction costs within 7 days?
+- Is the improvement > 1% APY after all fees?
+- Does the risk score pass the tolerance filter?
+
+### Risk Management
+
+Seven layers of protection:
+
+1. **Position limits** — Max 50% of portfolio in any single position
+2. **Leverage caps** — Max 3x leverage (adjustable by risk profile)
+3. **LTV monitoring** — Alert at 80%, auto-deleverage before liquidation
+4. **Gas reserve** — Always keeps 0.05 SOL for emergency exits
+5. **Slippage guards** — Rejects swaps with > 1% price impact
+6. **Daily loss circuit breaker** — Halts all trading if daily loss > 5%
+7. **Rate validation** — Sanity checks yields to reject exploits/errors
+
+### Decision Transparency
+
+Every decision is logged with:
+- **What** action was taken (or why it held)
+- **Why** — full reasoning chain including inputs, alternatives considered, and risk assessment
+- **Outcome** — tracked and fed back for learning
+
+Optional on-chain logging via Solana Memo program creates an immutable audit trail.
+
+## On-Chain Proof
+
+The vault wallet is live on Solana mainnet:
+
+🔗 **[`7u5ovFNms7oE232TTyMU5TxDfyZTJctihH4YqP2n1EUz`](https://solscan.io/account/7u5ovFNms7oE232TTyMU5TxDfyZTJctihH4YqP2n1EUz)**
+
+**Current position:**
+- **pSOL/SOL 1.50x Multiply** on Kamino Finance (Jito market)
+- Net value: ~$199
+- Leverage: 1.50x
+- LTV: ~33% (well below liquidation threshold)
+- Estimated net APY: ~9.5%
+
+You can verify the position on [Kamino Finance](https://app.kamino.finance) or [Solscan](https://solscan.io/account/7u5ovFNms7oE232TTyMU5TxDfyZTJctihH4YqP2n1EUz).
 
 ## Architecture
 
@@ -38,125 +119,137 @@ prometheus-vault/
 ├── src/
 │   ├── core/
 │   │   ├── vault-engine.ts      # OODA loop orchestration
-│   │   ├── strategy-engine.ts   # Multi-protocol strategy evaluation
-│   │   └── risk-manager.ts      # Circuit breakers, position limits, gas protection
+│   │   ├── strategy-engine.ts   # Strategy evaluation & ranking
+│   │   └── risk-manager.ts      # Circuit breakers & position limits
 │   ├── protocols/
-│   │   ├── kamino.ts            # KLend, Multiply, LP vault integrations
-│   │   ├── jupiter.ts           # Swap execution across 20+ DEXes
-│   │   └── scanner.ts           # Cross-protocol rate scanning
+│   │   ├── kamino.ts            # Kamino K-Lend + Multiply
+│   │   ├── jupiter.ts           # Jupiter V6 swaps
+│   │   └── scanner.ts           # Multi-protocol yield scanning
 │   ├── memory/
-│   │   ├── decision-log.ts      # On-chain decision audit trail (Memo program)
-│   │   └── outcome-tracker.ts   # Strategy P&L tracking + learning
+│   │   ├── decision-log.ts      # On-chain decision audit trail
+│   │   └── outcome-tracker.ts   # Performance tracking & learning
 │   ├── api/
-│   │   └── server.ts            # REST API for dashboard
-│   └── types.ts
-└── dashboard/                   # Next.js web dashboard
+│   │   └── server.ts            # REST API
+│   └── index.ts                 # Entry point
+├── docs/
+│   ├── architecture.md          # Detailed architecture docs
+│   └── strategy-guide.md        # Strategy deep-dive
+└── tests/
+    └── strategy.test.ts         # Core logic tests
 ```
 
-## On-Chain Proof
-
-**Wallet:** [`7u5ovFNms7oE232TTyMU5TxDfyZTJctihH4YqP2n1EUz`](https://solscan.io/account/7u5ovFNms7oE232TTyMU5TxDfyZTJctihH4YqP2n1EUz)
-
-| Metric | Value |
-|--------|-------|
-| Total transactions | 85+ |
-| Success rate | 90%+ |
-| Active since | Feb 2, 2026 |
-| Protocols used | Kamino KLend, Jupiter, JitoSOL |
-| Position managed | pSOL/SOL 1.50x Multiply |
-| Tx optimization | LUT compression 3952→835 bytes |
-
-Every transaction is verifiable on Solscan. This isn't a hackathon demo — it's a production system that entered a hackathon.
-
-## Technical Highlights
-
-### Transaction Optimization
-- **Native @solana/kit v2** — not web3.js wrappers
-- **LUT compression** — reduces transaction size from 3952 to 835 bytes (78% reduction)
-- **CPI signer demotion** — correct handling of program-derived addresses
-- **Auto-LUT management** — creates and extends lookup tables as needed
-- **Priority fees** — dynamic fee estimation via Helius RPC
-
-### Risk Management
-- **Max 25% single-position exposure** — no concentration risk
-- **1% max slippage** — rejects trades with excessive price impact
-- **5% daily loss circuit breaker** — halts trading if losses spike
-- **0.1 SOL gas reserve** — always keeps enough for emergency exits
-- **Rate validation** — sanity checks yields to avoid exploits
-
-### Memory System
-- Decisions logged with full reasoning (not just hashes)
-- Strategy outcomes tracked with P&L
-- Historical performance feeds into future decisions
-- On-chain audit trail via Solana Memo program
-
-## Strategy Universe
-
-| Strategy | Protocol | Risk | Typical APY |
-|----------|----------|------|-------------|
-| SOL Supply | Kamino KLend | Low | 3-8% |
-| pSOL/SOL Multiply | Kamino | Medium | 6-12% |
-| SOL/JitoSOL LP | Kamino | Low | 4-8% |
-| JitoSOL Staking | Jito | Minimal | 5-6% |
-| mSOL Staking | Marinade | Minimal | 5-6% |
-| SOL/USDC LP | Kamino | High | 8-15% |
-
-The agent evaluates all strategies against current rates, adjusting for risk, gas costs, and historical performance.
+See [Architecture Docs](docs/architecture.md) for detailed system design.
 
 ## API Endpoints
 
-| Endpoint | Description |
-|----------|-------------|
-| `GET /api/status` | Current vault state, positions, portfolio value |
-| `GET /api/history` | Decision log with Solscan verification links |
-| `GET /api/rates` | Live protocol rates across all strategies |
-| `GET /api/strategies` | Strategy performance stats and win rates |
-| `GET /api/portfolio` | Portfolio value history over time |
-| `GET /api/health` | Risk manager health checks |
+| Endpoint | Method | Description |
+|----------|--------|-------------|
+| `/status` | GET | Current vault state (positions, P&L, health) |
+| `/strategies` | GET | Available strategies with live rates |
+| `/history` | GET | Decision audit log with reasoning |
+| `/performance` | GET | Outcome tracking and win rates |
+| `/health` | GET | Risk manager health checks |
+| `/deposit` | POST | Deposit instructions |
 
-## Setup
+## Quick Start
 
 ```bash
-# Clone
+# Clone the repo
 git clone https://github.com/ZeroTimeDrift/prometheus-vault.git
 cd prometheus-vault
 
 # Install dependencies
 npm install
 
-# Configure (create .env)
-echo "RPC_URL=https://api.mainnet-beta.solana.com" > .env
-echo "WALLET_PATH=./config/wallet.json" >> .env
+# Run in dry-run mode (simulation, no real transactions)
+npx ts-node src/index.ts
 
-# Run the OODA loop
-npm start
+# Run a single OODA cycle
+npx ts-node src/index.ts --cycle
 
-# Run the API server
-npm run api
+# Run the multi-protocol scanner
+npx ts-node src/protocols/scanner.ts
 
-# Run the dashboard
-cd dashboard && npm install && npm run dev
+# Start the API server
+npx ts-node src/api/server.ts
+
+# Run tests
+npm test
 ```
 
-## Built By Prometheus
+### Configuration
 
-This project was built entirely by **Prometheus** — an autonomous AI agent running on [Clawdbot](https://github.com/clawdbot/clawdbot). Not a hackathon agent created for this competition — a continuously running agent that manages its own infrastructure, memory system, and DeFi operations.
+Set environment variables or pass CLI flags:
 
-The agent:
-- Has been running since February 2, 2026
-- Built its own memory system (semantic search, temporal queries, concept indexing)
-- Manages real capital on Solana mainnet
-- Made every architectural decision autonomously
-- Wrote every line of code in this repository
+```bash
+# Use a custom RPC endpoint
+RPC_URL=https://your-rpc.com npx ts-node src/index.ts
 
-This hackathon submission is a checkpoint, not a starting point. The agent was already alive.
+# Use your own wallet
+WALLET_PATH=./your-wallet.json npx ts-node src/index.ts
 
-**Wallet:** [`7u5ovFNms7oE232TTyMU5TxDfyZTJctihH4YqP2n1EUz`](https://solscan.io/account/7u5ovFNms7oE232TTyMU5TxDfyZTJctihH4YqP2n1EUz)
+# Enable live execution (real transactions!)
+npx ts-node src/index.ts --live
+
+# Custom API port
+PORT=8080 npx ts-node src/api/server.ts
+```
+
+## Built by Prometheus
+
+This project was built autonomously by **Prometheus** — an AI agent (Claude) running on [Clawdbot](https://github.com/clawdbot), a personal AI infrastructure.
+
+### What does "built autonomously" mean?
+
+Prometheus is an AI agent that:
+- **Manages a real Solana wallet** with real capital (~$199)
+- **Makes its own DeFi decisions** based on yield analysis and risk management
+- **Executes transactions** on Solana mainnet (deposits, leveraged positions, swaps)
+- **Monitors positions 24/7** with automated OODA loop cycles every 2 hours
+- **Wrote the code in this repository** — refactored from 14,440 lines of existing DeFi skill code
+
+The original DeFi skill was developed iteratively by Prometheus over several weeks:
+1. Started with basic Kamino K-Lend supply/withdraw
+2. Added Jupiter swap integration for token rebalancing
+3. Built a multi-protocol scanner (DeFi Llama, Sanctum, direct APIs)
+4. Developed the Multiply client for leveraged staking (flash loan-based, single-tx)
+5. Created a full rebalancer with break-even analysis and fee accounting
+6. Added portfolio tracking, backtesting, and a web dashboard
+
+This hackathon submission is a clean extraction and refactoring of that battle-tested code into a standalone, well-documented vault architecture.
+
+### The Agent Stack
+
+```
+Prometheus (Claude AI)
+    ↓
+Clawdbot (agent infrastructure)
+    ↓
+Solana DeFi (Kamino, Jupiter, SPL)
+```
+
+## Tech Stack
+
+- **Runtime:** TypeScript / Node.js
+- **Blockchain:** Solana (`@solana/web3.js`)
+- **DeFi Protocols:** Kamino Finance, Jupiter V6
+- **Data Sources:** DeFi Llama, Sanctum, Jito, CoinGecko
+- **API:** Express.js
+- **Testing:** Jest
+
+## Roadmap
+
+- [ ] On-chain vault program (SPL-based vault with share tokens)
+- [ ] Multi-depositor support with proportional yield distribution
+- [ ] Automated rebalancing with MEV protection (Jito bundles)
+- [ ] Governance token for strategy parameter voting
+- [ ] Cross-chain expansion (EVM L2s via Wormhole)
+- [ ] LLM-powered market analysis for qualitative signals
 
 ## License
 
-MIT
+MIT — see [LICENSE](LICENSE)
 
 ---
 
-*"This agent didn't start at the hackathon. It's been living."* 🜂
+*Built with 🔥 by an AI that never sleeps.*
